@@ -1,4 +1,4 @@
-const tags = [".schema-product__price-value", ".product-summary__price-value", ".ppricevalue", ".js-description-price-link", ".js-short-price-link", ".product-recommended__price", ".price-primary", ".offers-description__price", ".offers-list__description_nodecor", ".offers-list__price_secondary", ".offers-list__price_primary", ".cart-form__description_condensed-another", ".cart-form__description_font-weight_semibold", ".cart-form__description_extended"];
+const tags = [".schema-product__price-value", ".product-summary__price-value", ".ppricevalue", ".js-description-price-link", ".js-short-price-link", ".product-recommended__price", ".price-primary", ".offers-description__price", ".offers-list__description_nodecor", ".offers-list__price_secondary", ".offers-list__price_primary", ".cart-form__description_condensed-another", ".cart-form__description_font-weight_semibold", ".cart-form__description_extended", ".schema-product__button"];
 
 var formatter = new Intl.NumberFormat('ru-RU', {
   style: 'currency',
@@ -17,7 +17,7 @@ var observer = new MutationObserver(function (mutations, observer) {
             let price = convertor(elt);
             if (price) {
               if (tag != ".cart-form__description_extended") {
-                elt.innerHTML += '<br><span>' + price + '</span>';
+                elt.innerHTML += '<br><span style="color: #999; font-weight: 400;">' + price + '</span>';
               } else {
                 elt.innerText += ' ' + price;
               }
@@ -28,7 +28,7 @@ var observer = new MutationObserver(function (mutations, observer) {
     }
     // Cleans up string to number and converts to dollars
     function convertor(elt) {
-      if ((!elt.innerText.includes('$')) && (elt.innerText.includes('р.'))) {
+      if ((!elt.innerText.includes('$')) && ((elt.innerText.includes('р.')) || (elt.innerText.includes('p.')))) {
         if ((elt.innerText.includes('–')) && (!elt.innerText.includes('%'))) {
           const range = elt.innerText.split('–');
           const rangeDollar = [];
