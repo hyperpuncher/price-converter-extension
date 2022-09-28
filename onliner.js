@@ -17,7 +17,7 @@ var observer = new MutationObserver(function (mutations, observer) {
             let price = convertor(elt);
             if (price) {
               if (tag != ".cart-form__description_extended") {
-                elt.innerHTML += '<br><span style="color: #999; font-weight: 400;">' + price + '</span>';
+                elt.innerHTML += '<br><span style="text-shadow: 0px 0px 0.8px">' + price + '</span>';
               } else {
                 elt.innerText += ' ' + price;
               }
