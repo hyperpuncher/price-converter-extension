@@ -1,26 +1,36 @@
 const selectors = [
-  ".schema-product__price-value",
-  ".product-summary__price-value",
-  ".ppricevalue",
-  ".js-description-price-link",
-  ".js-short-price-link",
-  ".product-recommended__price",
-  ".price-primary",
-  ".offers-description__price",
-  ".offers-list__description_nodecor",
-  ".offers-list__price_secondary",
-  ".offers-list__price_primary",
   ".cart-form__description_ellipsis",
   ".cart-form__description_extended",
+  ".js-short-price-link",
+  ".offers-description__price",
+  ".offers-list__description_nodecor",
+  ".offers-list__price_primary",
+  ".offers-list__price_secondary",
+  ".ppricevalue",
+  ".price-primary",
+  ".product-recommended__price",
+  ".product-summary__price-value",
   ".schema-product__button",
-];
+  ".schema-product__price-value",
+].join(",");
+
+const selectorsForObserver = [
+  ".b-offers-list",
+  ".cart-form",
+  ".js-schema-results",
+].join(",");
 
 let rate;
 
 (async () => {
-  const response = await fetch("https://www.nbrb.by/api/exrates/rates/431");
-  const data = await response.json();
-  rate = data["Cur_OfficialRate"];
+  const response = await fetch("https://myfin.by/currency/usd");
+  const html = await response.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  rate = parseFloat(
+    doc.querySelector("tbody tr:first-child td:nth-child(2)").textContent
+  );
+  addConversion();
 })();
 
 const formatter = new Intl.NumberFormat("ru-RU", {
@@ -29,27 +39,23 @@ const formatter = new Intl.NumberFormat("ru-RU", {
 });
 
 function addConversion() {
-  for (let selector of selectors) {
-    let elements = document.querySelectorAll(selector);
+  let elements = document.querySelectorAll(selectors);
 
-    if (elements) {
-      for (let element of elements) {
-        let price = convertToDollars(element);
+  for (let element of elements) {
+    let price = convertToDollars(element);
 
-        if (price) {
-          element.innerHTML +=
-            '<br><span style="text-shadow: 0px 0px 0.8px">' + price + "</span>";
-        }
-      }
+    if (price) {
+      element.innerHTML +=
+        '<br><span style="text-shadow: 0px 0px 0.8px">' + price + "</span>";
     }
   }
 }
 
 function convertToDollars(element) {
-  let text = element.innerText;
+  let text = element.textContent;
 
   if (!text.includes("$") && text.includes("р.")) {
-    // Handle price ranges
+    // Handle price ranges: 115,00 – 190,64 р.
     if (text.includes("–") && !text.includes("%")) {
       const range = text.split("–");
       const rangeDollar = [];
@@ -65,7 +71,7 @@ function convertToDollars(element) {
       let dollar = rangeDollar[0] + " – " + rangeDollar[1];
       dollar = dollar.replace("$", "");
       return dollar;
-      // Handle prices with a colon separator
+      // Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
     } else if (text.includes(":")) {
       let price = parseFloat(
         text
@@ -78,7 +84,7 @@ function convertToDollars(element) {
       let dollar = formatter.format(conversion);
       return dollar;
     }
-    // Handle regular prices
+    // Handle regular prices: 845,00 р.
     let price = parseFloat(text.replace(/[^0-9,]/g, "").replace(",", "."));
     let conversion = price / rate;
     let dollar = formatter.format(conversion);
@@ -93,7 +99,10 @@ const observer = new window.MutationObserver(() => {
   }
 });
 
-observer.observe(document, {
+const targetElements = document.querySelector(selectorsForObserver);
+
+observer.observe(targetElements, {
   subtree: true,
   attributes: true,
+  characterData: true,
 });
