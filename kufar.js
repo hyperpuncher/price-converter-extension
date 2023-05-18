@@ -4,34 +4,37 @@ const selectors = [
   "[class*=styles_main]",
   "[class*=styles_discountPrice]",
   ".account_ads__price",
-];
+].join(",");
 
 let rate;
 
 (async () => {
-  const response = await fetch("https://www.nbrb.by/api/exrates/rates/431");
-  const data = await response.json();
-  rate = data["Cur_OfficialRate"];
+  const response = await fetch("https://myfin.by/currency/usd");
+  const html = await response.text();
+  const parser = new DOMParser();
+  const doc = parser.parseFromString(html, "text/html");
+  rate = parseFloat(
+    doc.querySelector("tbody tr:first-child td:nth-child(2)").textContent
+  );
+  addConversion();
 })();
 
 function addConversion() {
-  for (let selector of selectors) {
-    let elements = document.querySelectorAll(selector);
+  let elements = document.querySelectorAll(selectors);
 
-    if (elements) {
-      for (let element of elements) {
-        let price = convertToDollars(element);
+  if (elements) {
+    for (let element of elements) {
+      let price = convertToDollars(element);
 
-        if (!isNaN(price)) {
-          element.innerHTML += "<span> " + price.toFixed(2) + " $" + "</span>";
-        }
+      if (!isNaN(price)) {
+        element.innerHTML += "<span> " + price.toFixed(2) + " $" + "</span>";
       }
     }
   }
 }
 
 function convertToDollars(element) {
-  let text = element.innerText;
+  let text = element.textContent;
 
   if (!text.includes("%") && !text.includes("$") && text.includes("р.")) {
     let price = parseFloat(text.replace(/[^0-9.]/g, ""));
