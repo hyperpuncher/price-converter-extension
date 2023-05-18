@@ -1,7 +1,7 @@
 {
   "name": "Конвертер цен для Onliner и Kufar",
   "description": "Добавляет цены в долларах на onliner.by и kufar.by.",
-  "version": "1.1",
+  "version": "1.2",
   "manifest_version": 3,
   "permissions": ["webRequest"],
   "content_scripts": [
