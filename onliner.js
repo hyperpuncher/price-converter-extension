@@ -18,6 +18,7 @@ const selectorsForObserver = [
   ".b-offers-list",
   ".cart-form",
   ".js-schema-results",
+  ".offers-filter__part",
 ].join(",");
 
 let rate;
@@ -71,6 +72,7 @@ function convertToDollars(element) {
       let dollar = rangeDollar[0] + " – " + rangeDollar[1];
       dollar = dollar.replace("$", "");
       return dollar;
+
       // Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
     } else if (text.includes(":")) {
       let price = parseFloat(
@@ -84,6 +86,7 @@ function convertToDollars(element) {
       let dollar = formatter.format(conversion);
       return dollar;
     }
+
     // Handle regular prices: 845,00 р.
     let price = parseFloat(text.replace(/[^0-9,]/g, "").replace(",", "."));
     let conversion = price / rate;
@@ -94,6 +97,7 @@ function convertToDollars(element) {
 }
 
 const observer = new window.MutationObserver(() => {
+  console.log("yo");
   if (rate) {
     addConversion();
   }
