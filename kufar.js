@@ -9,14 +9,9 @@ const selectors = [
 let rate;
 
 (async () => {
-  const response = await fetch("https://myfin.by/currency/usd");
-  const html = await response.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-  rate = parseFloat(
-    doc.querySelector("tbody tr:first-child td:nth-child(2)").textContent
-  );
-  addConversion();
+  const response = await fetch("https://www.nbrb.by/api/exrates/rates/431");
+  const data = await response.json();
+  rate = data["Cur_OfficialRate"];
 })();
 
 function addConversion() {

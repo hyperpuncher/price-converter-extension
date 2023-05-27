@@ -24,14 +24,27 @@ const selectorsForObserver = [
 let rate;
 
 (async () => {
-  const response = await fetch("https://myfin.by/currency/usd");
-  const html = await response.text();
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(html, "text/html");
-  rate = parseFloat(
-    doc.querySelector("tbody tr:first-child td:nth-child(2)").textContent
-  );
-  addConversion();
+  try {
+    const response = await fetch("https://www.nbrb.by/api/exrates/rates/431");
+    const data = await response.json();
+    rate = data["Cur_OfficialRate"];
+    addConversion();
+  } catch (error) {
+    console.error(error);
+
+    const interval = setInterval(() => {
+      rate = parseFloat(
+        document
+          .querySelector(".js-currency-amount")
+          .textContent.split(" ")[1]
+          .replace(",", ".")
+      );
+      if (rate) {
+        clearInterval(interval);
+        addConversion();
+      }
+    }, 50);
+  }
 })();
 
 const formatter = new Intl.NumberFormat("ru-RU", {
@@ -97,7 +110,6 @@ function convertToDollars(element) {
 }
 
 const observer = new window.MutationObserver(() => {
-  console.log("yo");
   if (rate) {
     addConversion();
   }
