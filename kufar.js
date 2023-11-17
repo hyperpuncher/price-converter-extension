@@ -9,7 +9,7 @@ const selectors = [
 let rate;
 
 (async () => {
-  const response = await fetch("https://www.nbrb.by/api/exrates/rates/431");
+  const response = await fetch("https://api.nbrb.by/exrates/rates/431");
   const data = await response.json();
   rate = data["Cur_OfficialRate"];
 })();
