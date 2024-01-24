@@ -25,27 +25,28 @@ const selectorsForObserver = [
 let rate;
 
 (async () => {
-  try {
-    const response = await fetch("https://api.nbrb.by/exrates/rates/431");
-    const data = await response.json();
-    rate = data["Cur_OfficialRate"];
-    addConversion();
-  } catch (error) {
-    console.error(error);
-
-    const interval = setInterval(() => {
-      rate = parseFloat(
-        document
-          .querySelector(".js-currency-amount")
-          .textContent.split(" ")[1]
-          .replace(",", ".")
-      );
-      if (rate) {
-        clearInterval(interval);
+    try {
+        const response = await fetch("https://api.nbrb.by/exrates/rates/431");
+        const data = await response.json();
+        rate = data["Cur_OfficialRate"];
         addConversion();
-      }
-    }, 50);
-  }
+        setTimeout(addConversion, 2500);
+    } catch (error) {
+        console.error(error);
+
+        const interval = setInterval(() => {
+            rate = parseFloat(
+                document
+                    .querySelector(".js-currency-amount")
+                    .textContent.split(" ")[1]
+                    .replace(",", "."),
+            );
+            if (rate) {
+                clearInterval(interval);
+                addConversion();
+            }
+        }, 50);
+    }
 })();
 
 const formatter = new Intl.NumberFormat("ru-RU", {
