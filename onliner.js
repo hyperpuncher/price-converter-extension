@@ -1,24 +1,25 @@
 const selectors = [
-  ".cart-form__description_ellipsis",
-  ".cart-form__description_extended",
-  ".js-short-price-link",
-  ".offers-description__price",
-  ".offers-list__description_nodecor",
-  ".offers-list__price_primary",
-  ".offers-list__price_secondary",
-  ".ppricevalue",
-  ".price-primary",
-  ".product-recommended__price",
-  ".product-summary__price-value",
-  ".schema-product__button",
-  ".schema-product__price-value",
+    ".cart-form__description_condensed-another",
+    ".cart-form__offers-part_sum div",
+    ".catalog-form__description_huge-additional a",
+    ".js-description-price-link",
+    ".js-short-price-link",
+    ".offers-list__description_alter-other",
+    ".offers-list__price",
+    ".ppricevalue",
+    ".price-primary",
+    ".product-recommended__price",
+    ".product-summary__price-value",
+    ".product__price-value",
+    ".service-offers__price",
 ].join(",");
 
 const selectorsForObserver = [
-  ".b-offers-list",
-  ".cart-form",
-  ".js-schema-results",
-  ".offers-filter__part",
+    ".b-offers-list-line-table",
+    ".catalog-form__filter-part_2",
+    ".offers-filter__part_2",
+    ".offers-list__circle-slice",
+    ".service-filter__part_2",
 ].join(",");
 
 let rate;
