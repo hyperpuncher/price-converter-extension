@@ -55,16 +55,18 @@ const formatter = new Intl.NumberFormat("ru-RU", {
 });
 
 function addConversion() {
-  let elements = document.querySelectorAll(selectors);
+    let elements = document.querySelectorAll(selectors);
 
-  for (let element of elements) {
-    let price = convertToDollars(element);
+    for (let element of elements) {
+        let price = convertToDollars(element);
 
-    if (price) {
-      element.innerHTML +=
-        '<br><span style="text-shadow: 0px 0px 0.8px">' + price + "</span>";
+        if (price) {
+            element.insertAdjacentHTML(
+                "beforeend",
+                `<br><span style="text-shadow: 0px 0px 0.8px">${price}</span>`,
+            );
+        }
     }
-  }
 }
 
 function convertToDollars(element) {
