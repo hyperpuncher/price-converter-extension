@@ -50,8 +50,8 @@ let rate;
 })();
 
 const formatter = new Intl.NumberFormat("ru-RU", {
-  style: "currency",
-  currency: "USD",
+    style: "currency",
+    currency: "USD",
 });
 
 function addConversion() {
@@ -70,59 +70,59 @@ function addConversion() {
 }
 
 function convertToDollars(element) {
-  let text = element.textContent;
+    let text = element.textContent;
 
-  if (!text.includes("$") && text.includes("р.")) {
-    // Handle price ranges: 115,00 – 190,64 р.
-    if (text.includes("–") && !text.includes("%")) {
-      const range = text.split("–");
-      const rangeDollar = [];
+    if (!text.includes("$") && text.includes("р.")) {
+        // Handle price ranges: 115,00 – 190,64 р.
+        if (text.includes("–") && !text.includes("%")) {
+            const range = text.split("–");
+            const rangeDollar = [];
 
-      for (element of range) {
-        let price = parseFloat(
-          element.replace(/[^0-9,]/g, "").replace(",", ".")
-        );
+            for (element of range) {
+                let price = parseFloat(
+                    element.replace(/[^0-9,]/g, "").replace(",", "."),
+                );
+                let conversion = price / rate;
+                rangeDollar.push(formatter.format(conversion));
+            }
+
+            let dollar = rangeDollar[0] + " – " + rangeDollar[1];
+            dollar = dollar.replace("$", "");
+            return dollar;
+
+            // Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
+        } else if (text.includes(":")) {
+            let price = parseFloat(
+                text
+                    .split(":")
+                    .pop()
+                    .replace(/[^0-9,]/g, "")
+                    .replace(",", "."),
+            );
+            let conversion = price / rate;
+            let dollar = formatter.format(conversion);
+            return dollar;
+        }
+
+        // Handle regular prices: 845,00 р.
+        let price = parseFloat(text.replace(/[^0-9,]/g, "").replace(",", "."));
         let conversion = price / rate;
-        rangeDollar.push(formatter.format(conversion));
-      }
-
-      let dollar = rangeDollar[0] + " – " + rangeDollar[1];
-      dollar = dollar.replace("$", "");
-      return dollar;
-
-      // Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
-    } else if (text.includes(":")) {
-      let price = parseFloat(
-        text
-          .split(":")
-          .pop()
-          .replace(/[^0-9,]/g, "")
-          .replace(",", ".")
-      );
-      let conversion = price / rate;
-      let dollar = formatter.format(conversion);
-      return dollar;
+        let dollar = formatter.format(conversion);
+        return dollar;
     }
-
-    // Handle regular prices: 845,00 р.
-    let price = parseFloat(text.replace(/[^0-9,]/g, "").replace(",", "."));
-    let conversion = price / rate;
-    let dollar = formatter.format(conversion);
-    return dollar;
-  }
-  return null;
+    return null;
 }
 
 const observer = new window.MutationObserver(() => {
-  if (rate) {
-    addConversion();
-  }
+    if (rate) {
+        addConversion();
+    }
 });
 
 const targetElements = document.querySelector(selectorsForObserver);
 
 observer.observe(targetElements, {
-  subtree: true,
-  attributes: true,
-  characterData: true,
+    subtree: true,
+    attributes: true,
+    characterData: true,
 });
