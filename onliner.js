@@ -8,6 +8,7 @@ const selectors = [
     ".offers-list__price",
     ".ppricevalue",
     ".price-primary",
+    ".product-aside__description_huge-other",
     ".product-recommended__price",
     ".product-summary__price-value",
     ".product__price-value",
