@@ -64,7 +64,7 @@ function addConversion() {
         if (price) {
             element.insertAdjacentHTML(
                 "beforeend",
-                `<br><span style="text-shadow: 0px 0px 0.8px">${price}</span>`,
+                `<br><span>${price}</span>`,
             );
         }
     }
