@@ -21,6 +21,7 @@ const selectorsForObserver = [
 	".offers-filter__part_2",
 	".offers-list__circle-slice",
 	".service-filter__part_2",
+	".product_details",
 ].join(",");
 
 let rate;
@@ -30,6 +31,7 @@ let rate;
 	if (rate) {
 		addConversion();
 		setTimeout(addConversion, 2500);
+		initializeObserver();
 	}
 })();
 
@@ -45,10 +47,10 @@ function addConversion() {
 		let price = convertToDollars(element);
 
 		if (price) {
-			element.insertAdjacentHTML(
-				"beforeend",
-				`<br><span>${price}</span>`,
-			);
+			const lineBreak = document.createElement("br");
+			const priceSpan = document.createElement("span");
+			priceSpan.textContent = price;
+			element.append(lineBreak, priceSpan);
 		}
 	}
 }
@@ -63,9 +65,7 @@ function convertToDollars(element) {
 			const rangeDollar = [];
 
 			for (element of range) {
-				let price = parseFloat(
-					element.replace(/[^0-9,]/g, "").replace(",", "."),
-				);
+				let price = parseFloat(element.replace(/[^0-9,]/g, "").replace(",", "."));
 				let conversion = price / rate;
 				rangeDollar.push(formatter.format(conversion));
 			}
@@ -97,16 +97,16 @@ function convertToDollars(element) {
 	return null;
 }
 
-const observer = new window.MutationObserver(() => {
-	if (rate) {
-		addConversion();
+const observer = new MutationObserver(() => {
+	if (rate) addConversion();
+});
+
+function initializeObserver() {
+	const targetElements = document.querySelector(selectorsForObserver);
+	if (targetElements) {
+		observer.observe(targetElements, {
+			subtree: true,
+			childList: true,
+		});
 	}
-});
-
-const targetElements = document.querySelector(selectorsForObserver);
-
-observer.observe(targetElements, {
-	subtree: true,
-	attributes: true,
-	characterData: true,
-});
+}
