@@ -1,8 +1,7 @@
 const selectors = [
-	"[class*=styles_price--main__]",
-	"[class*=styles_price__]",
-	"[class*=styles_main]",
-	"[class*=styles_discountPrice]",
+	"[class^=styles_price__]",
+	"[class^=styles_discountPrice]",
+	"[class*=styles_brief_wrapper__price]",
 	".account_ads__price",
 ].join(",");
 
@@ -20,7 +19,24 @@ function addConversion() {
 			let price = convertToDollars(element);
 
 			if (!isNaN(price)) {
-				element.innerHTML += "<span> " + price.toFixed(2) + " $" + "</span>";
+				let usdSpan;
+
+				if (element.children[1]) {
+					usdSpan = element.children[1];
+				} else {
+					usdSpan = document.createElement("span");
+					element.append(usdSpan);
+				}
+
+				usdSpan.textContent = `${price.toFixed(2)} $*`;
+				usdSpan.style.color = "gray";
+				usdSpan.style.whiteSpace = "nowrap";
+
+				if (element.className.includes("brief_wrapper")) {
+					usdSpan.style.fontSize = "14px";
+					usdSpan.style.lineHeight = "20px";
+					usdSpan.style.marginLeft = "8px";
+				}
 			}
 		}
 	}
