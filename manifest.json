@@ -3,15 +3,15 @@
 	"description": "Добавляет цены в долларах на onliner.by и kufar.by.",
 	"version": "1.6",
 	"manifest_version": 3,
-	"permissions": ["webRequest"],
+	"permissions": ["storage"],
 	"content_scripts": [
 		{
 			"matches": ["https://*.kufar.by/*"],
-			"js": ["kufar.js"]
+			"js": ["rate.js", "kufar.js"]
 		},
 		{
 			"matches": ["https://*.onliner.by/*"],
-			"js": ["onliner.js"]
+			"js": ["rate.js", "onliner.js"]
 		}
 	],
 	"icons": {

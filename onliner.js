@@ -26,27 +26,10 @@ const selectorsForObserver = [
 let rate;
 
 (async () => {
-	try {
-		const response = await fetch("https://api.nbrb.by/exrates/rates/431");
-		const data = await response.json();
-		rate = data["Cur_OfficialRate"];
+	rate = await window.getExchangeRate();
+	if (rate) {
 		addConversion();
 		setTimeout(addConversion, 2500);
-	} catch (error) {
-		console.error(error);
-
-		const interval = setInterval(() => {
-			rate = parseFloat(
-				document
-					.querySelector(".js-currency-amount")
-					.textContent.split(" ")[1]
-					.replace(",", "."),
-			);
-			if (rate) {
-				clearInterval(interval);
-				addConversion();
-			}
-		}, 50);
 	}
 })();
 
