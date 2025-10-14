@@ -12,11 +12,11 @@ let rate;
 })();
 
 function addConversion() {
-	let elements = document.querySelectorAll(selectors);
+	const elements = document.querySelectorAll(selectors);
 
 	if (elements) {
-		for (let element of elements) {
-			let price = convertToDollars(element);
+		for (const element of elements) {
+			const price = convertToDollars(element);
 
 			if (!isNaN(price)) {
 				let usdSpan;
@@ -28,7 +28,7 @@ function addConversion() {
 					element.append(usdSpan);
 				}
 
-				usdSpan.textContent = `${price.toFixed(2)} $*`;
+				usdSpan.textContent = `${price} $*`;
 				usdSpan.style.color = "gray";
 				usdSpan.style.whiteSpace = "nowrap";
 
@@ -43,12 +43,14 @@ function addConversion() {
 }
 
 function convertToDollars(element) {
-	let text = element.textContent;
+	const text = element.textContent;
 
 	if (!text.includes("%") && !text.includes("$") && text.includes("р.")) {
-		let price = parseFloat(text.replace(/[^0-9.]/g, ""));
-		let conversion = price / rate;
-		return conversion;
+		const price = parseFloat(text.replace(/[^0-9.]/g, ""));
+		const conversion = price / rate;
+		return conversion >= 10
+			? Math.round(conversion)
+			: Math.round(conversion * 100) / 100;
 	}
 	return NaN;
 }
