@@ -83,7 +83,7 @@ function convertToDollars(element) {
 		} else if (text.includes(":")) {
 			// Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
 			price = parsePrice(text.split(":").pop());
-		} else if (text.includes("-") && text.includes("%")) {
+		} else if ((text.includes("-") || text.includes("−")) && text.includes("%")) {
 			// Handle sale prices:  -9% 5899,00 р. 5399,00 р.
 			price = parsePrice(text.split("  ").pop());
 		} else {
