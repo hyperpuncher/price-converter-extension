@@ -41,6 +41,10 @@ function roundPrice(price) {
 	return price >= 10 ? Math.round(price) : Math.round(price * 100) / 100;
 }
 
+function parsePrice(price) {
+	return parseFloat(price.replace(/[^0-9,]/g, "").replace(",", "."));
+}
+
 function addConversion() {
 	const elements = document.querySelectorAll(selectors);
 
@@ -60,15 +64,15 @@ function convertToDollars(element) {
 	const text = element.textContent;
 
 	if (!text.includes("$") && text.includes("р.")) {
-		// Handle price ranges: 115,00 – 190,64 р.
+		let price;
+
 		if (text.includes("–") && !text.includes("%")) {
+			// Handle price ranges: 115,00 – 190,64 р.
 			const range = text.split("–");
 			const rangeDollar = [];
 
 			for (element of range) {
-				const price = parseFloat(
-					element.replace(/[^0-9,]/g, "").replace(",", "."),
-				);
+				const price = parsePrice(element);
 				const conversion = price / rate;
 				rangeDollar.push(roundPrice(conversion));
 			}
@@ -76,22 +80,17 @@ function convertToDollars(element) {
 			let dollar = rangeDollar[0] + " – " + rangeDollar[1];
 			dollar = dollar.replace("$", "");
 			return dollar;
-
-			// Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
 		} else if (text.includes(":")) {
-			const price = parseFloat(
-				text
-					.split(":")
-					.pop()
-					.replace(/[^0-9,]/g, "")
-					.replace(",", "."),
-			);
-			const conversion = price / rate;
-			return roundPrice(conversion);
+			// Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
+			price = parsePrice(text.split(":").pop());
+		} else if (text.includes("-") && text.includes("%")) {
+			// Handle sale prices:  -9% 5899,00 р. 5399,00 р.
+			price = parsePrice(text.split("  ").pop());
+		} else {
+			// Handle regular prices: 845,00 р.
+			price = parsePrice(text);
 		}
 
-		// Handle regular prices: 845,00 р.
-		const price = parseFloat(text.replace(/[^0-9,]/g, "").replace(",", "."));
 		const conversion = price / rate;
 		return roundPrice(conversion);
 	}
