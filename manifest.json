@@ -1,6 +1,6 @@
 {
-	"name": "Конвертер цен для Onliner и Kufar",
-	"description": "Добавляет цены в долларах на onliner.by и kufar.by.",
+	"name": "Конвертер цен для Onliner и Kufar (RUB)",
+	"description": "Добавляет цены в российских рублях на onliner.by и kufar.by.",
 	"version": "1.10",
 	"manifest_version": 3,
 	"permissions": ["storage"],

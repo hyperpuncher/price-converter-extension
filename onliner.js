@@ -54,7 +54,7 @@ function addConversion() {
 		if (price) {
 			const lineBreak = document.createElement("br");
 			const priceSpan = document.createElement("span");
-			priceSpan.textContent = price + " $";
+			priceSpan.textContent = price + " ₽";
 			element.append(lineBreak, priceSpan);
 		}
 	}
@@ -63,7 +63,7 @@ function addConversion() {
 function convertToDollars(element) {
 	const text = element.textContent;
 
-	if (!text.includes("$") && text.includes("р.")) {
+	if (!text.includes("₽") && text.includes("р.")) {
 		let price;
 
 		if (text.includes("–") && !text.includes("%")) {
@@ -77,9 +77,7 @@ function convertToDollars(element) {
 				rangeDollar.push(roundPrice(conversion));
 			}
 
-			let dollar = rangeDollar[0] + " – " + rangeDollar[1];
-			dollar = dollar.replace("$", "");
-			return dollar;
+				return rangeDollar[0] + " – " + rangeDollar[1];
 		} else if (text.includes(":")) {
 			// Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
 			price = parsePrice(text.split(":").pop());
