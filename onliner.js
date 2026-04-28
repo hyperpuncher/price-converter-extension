@@ -63,7 +63,7 @@ function addConversion() {
 function convertToDollars(element) {
 	const text = element.textContent;
 
-	if (!text.includes("$") && text.includes("р.")) {
+	if (!text.includes("$") && text.includes("ƃ")) {
 		let price;
 
 		if (text.includes("–") && !text.includes("%")) {
