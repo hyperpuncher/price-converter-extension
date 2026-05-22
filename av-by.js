@@ -20,8 +20,7 @@ function addConversion() {
 			if (!isNaN(price)) {
 				usdSpan = document.createElement("div");
 				element.append(document.createElement("br"), usdSpan);
-				usdSpan.textContent = `${price} $`;
-				usdSpan.style.color = "gray";
+				usdSpan.textContent = `${formatter.format(price)} $`;
 				usdSpan.style.whiteSpace = "nowrap";
 			}
 		}
@@ -40,6 +39,11 @@ function convertToDollars(element) {
 	}
 	return NaN;
 }
+
+const formatter = new Intl.NumberFormat("ru-RU", {
+	style: "decimal",
+	maximumFractionDigits: 0,
+});
 
 const observer = new window.MutationObserver(() => {
 	if (rate) {
