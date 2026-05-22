@@ -1,6 +1,6 @@
 {
-	"name": "Конвертер цен для Onliner и Kufar",
-	"description": "Добавляет цены в долларах на onliner.by и kufar.by.",
+	"name": "Конвертер цен для Onliner, Kufar и av.by",
+	"description": "Добавляет цены в долларах на onliner.by, kufar.by и av.by",
 	"version": "1.11",
 	"manifest_version": 3,
 	"permissions": ["storage"],
@@ -12,6 +12,10 @@
 		{
 			"matches": ["https://*.onliner.by/*"],
 			"js": ["rate.js", "onliner.js"]
+		},
+		{
+			"matches": ["https://*.av.by/*"],
+			"js": ["rate.js", "av-by.js"]
 		}
 	],
 	"icons": {
