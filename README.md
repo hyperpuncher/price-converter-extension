@@ -2,7 +2,7 @@
     <img src="images/icon128.png" alt="Logo"></img>
 </p>
 
-<h1 align="center">Price converter for Onliner and Kufar</h1>
+<h1 align="center">Price converter for Onliner, Kufar and av.by</h1>
 
 <p align="center">
     <b>Download:</b>
