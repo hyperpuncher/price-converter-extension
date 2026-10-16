@@ -1,0 +1,9 @@
+.price-converter-usd {
+	display: inline-block;
+	margin-inline-start: 0.5rem;
+	color: gray;
+	font-size: 14px;
+	font-weight: 400;
+	line-height: 20px;
+	white-space: nowrap;
+}
