@@ -18,7 +18,7 @@ function addConversion() {
 			const price = convertToDollars(element);
 
 			if (!isNaN(price)) {
-				usdSpan = document.createElement("div");
+				const usdSpan = document.createElement("div");
 				element.append(document.createElement("br"), usdSpan);
 				usdSpan.textContent = `${formatter.format(price)} $`;
 				usdSpan.style.whiteSpace = "nowrap";
