@@ -78,7 +78,9 @@ function convertToDollars(text) {
 
 	if (text.includes("–") && !text.includes("%")) {
 		// price range: 115,00 – 190,64 ƃ
-		const range = text.split("–").map((price) => roundPrice(parsePrice(price) / rate));
+		const range = text
+			.split("–")
+			.map((price) => roundPrice(parsePrice(price) / rate));
 		return range.length === 2 && range.every(Number.isFinite)
 			? range.join(" – ")
 			: null;
@@ -99,11 +101,16 @@ function convertToDollars(text) {
 }
 
 const observer = new MutationObserver((mutations) => {
-	const priceChanged = mutations.some(({ target, addedNodes }) =>
-		(target instanceof Element ? target : target.parentElement)?.closest(selectors) ||
-		Array.from(addedNodes).some((node) =>
-			node instanceof Element && (node.matches(selectors) || node.querySelector(selectors))
-		)
+	const priceChanged = mutations.some(
+		({ target, addedNodes }) =>
+			(target instanceof Element ? target : target.parentElement)?.closest(
+				selectors,
+			) ||
+			Array.from(addedNodes).some(
+				(node) =>
+					node instanceof Element &&
+					(node.matches(selectors) || node.querySelector(selectors)),
+			),
 	);
 	if (!priceChanged) return;
 	// Batch page changes and do not observe our own DOM updates.

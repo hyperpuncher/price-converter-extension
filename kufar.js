@@ -57,17 +57,20 @@ function convertToDollars(text) {
 	const conversion = price / rate;
 	if (!Number.isFinite(conversion)) return null;
 
-	return conversion >= 10
-		? Math.round(conversion)
-		: Math.round(conversion * 100) / 100;
+	return conversion >= 10 ? Math.round(conversion) : Math.round(conversion * 100) / 100;
 }
 
 const observer = new MutationObserver((mutations) => {
-	const priceChanged = mutations.some(({ target, addedNodes }) =>
-		(target instanceof Element ? target : target.parentElement)?.closest(selectors) ||
-		Array.from(addedNodes).some((node) =>
-			node instanceof Element && (node.matches(selectors) || node.querySelector(selectors))
-		)
+	const priceChanged = mutations.some(
+		({ target, addedNodes }) =>
+			(target instanceof Element ? target : target.parentElement)?.closest(
+				selectors,
+			) ||
+			Array.from(addedNodes).some(
+				(node) =>
+					node instanceof Element &&
+					(node.matches(selectors) || node.querySelector(selectors)),
+			),
 	);
 	if (!priceChanged) return;
 	observer.disconnect();
