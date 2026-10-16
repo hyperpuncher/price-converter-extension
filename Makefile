@@ -1,2 +1,2 @@
 packing:
-	zip -r extension.zip images/ *.js manifest.json
+	zip -r -FS extension.zip images/ *.js *.css manifest.json
