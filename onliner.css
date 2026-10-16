@@ -1,0 +1,13 @@
+.price-converter-usd {
+	display: block;
+	white-space: nowrap;
+}
+
+:is(.js-description-price-link, .js-short-price-link):has(> .price-converter-usd) {
+	flex-wrap: wrap;
+	row-gap: 0.25rem;
+}
+
+:is(.js-description-price-link, .js-short-price-link) > .price-converter-usd {
+	flex: 0 0 100%;
+}

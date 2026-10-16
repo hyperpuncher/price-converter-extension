@@ -11,7 +11,8 @@
 		},
 		{
 			"matches": ["https://*.onliner.by/*"],
-			"js": ["rate.js", "onliner.js"]
+			"js": ["rate.js", "onliner.js"],
+			"css": ["onliner.css"]
 		},
 		{
 			"matches": ["https://*.av.by/*"],

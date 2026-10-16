@@ -17,22 +17,12 @@ const selectors = [
 	".service-offers__price",
 ].join(",");
 
-const selectorsForObserver = [
-	".b-offers-list-line-table",
-	".catalog-form__filter-part_2",
-	".offers-filter__part_2",
-	".offers-list__circle-slice",
-	".service-filter__part_2",
-	".product_details",
-].join(",");
-
 let rate;
 
 (async () => {
 	rate = await window.getExchangeRate();
 	if (rate) {
 		addConversion();
-		setTimeout(addConversion, 2500);
 		initializeObserver();
 	}
 })();
@@ -46,67 +36,88 @@ function parsePrice(price) {
 }
 
 function addConversion() {
-	const elements = document.querySelectorAll(selectors);
+	for (const element of document.querySelectorAll(selectors)) {
+		// Some price selectors overlap. Convert only the innermost match.
+		if (element.querySelector(selectors)) continue;
 
-	for (const element of elements) {
-		const price = convertToDollars(element);
+		let priceSpan = element.querySelector(":scope > .price-converter-usd");
+		const text = Array.from(element.childNodes)
+			.filter((node) => node !== priceSpan)
+			.map((node) => node.textContent)
+			.join("");
+		const price = convertToDollars(text);
 
-		if (price) {
-			const lineBreak = document.createElement("br");
-			const priceSpan = document.createElement("span");
-			priceSpan.textContent = price + " $";
-			element.append(lineBreak, priceSpan);
+		if (price === null) {
+			priceSpan?.remove();
+			continue;
 		}
-	}
-}
 
-function convertToDollars(element) {
-	const text = element.textContent;
+		if (!priceSpan) {
+			priceSpan = document.createElement("span");
+			priceSpan.className = "price-converter-usd";
+			element.append(priceSpan);
+		}
+		const convertedText = `${price} $`;
+		if (priceSpan.textContent === convertedText) continue;
 
-	if (!text.includes("$") && text.includes("ƃ")) {
-		let price;
-
-		if (text.includes("–") && !text.includes("%")) {
-			// Handle price ranges: 115,00 – 190,64 р.
-			const range = text.split("–");
-			const rangeDollar = [];
-
-			for (element of range) {
-				const price = parsePrice(element);
-				const conversion = price / rate;
-				rangeDollar.push(roundPrice(conversion));
-			}
-
-			let dollar = rangeDollar[0] + " – " + rangeDollar[1];
-			dollar = dollar.replace("$", "");
-			return dollar;
-		} else if (text.includes(":")) {
-			// Handle prices with a colon separator: 4 товара на сумму: 1681,35 р.
-			price = parsePrice(text.split(":").pop());
-		} else if ((text.includes("-") || text.includes("−")) && text.includes("%")) {
-			// Handle sale prices:  -9% 5899,00 р. 5399,00 р.
-			price = parsePrice(text.split("  ").pop());
+		if (element.matches(".js-description-price-link")) {
+			priceSpan.classList.add("h_txt_tl0");
+			priceSpan.textContent = price;
+			const currencySpan = document.createElement("span");
+			currencySpan.className = "h_txt_tl2";
+			currencySpan.textContent = " $";
+			priceSpan.append(currencySpan);
 		} else {
-			// Handle regular prices: 845,00 р.
-			price = parsePrice(text);
+			priceSpan.textContent = convertedText;
 		}
-
-		const conversion = price / rate;
-		return roundPrice(conversion);
 	}
-	return null;
 }
 
-const observer = new MutationObserver(() => {
-	if (rate) addConversion();
+function convertToDollars(text) {
+	if (text.includes("$") || !text.includes("ƃ")) return null;
+
+	if (text.includes("–") && !text.includes("%")) {
+		// price range: 115,00 – 190,64 ƃ
+		const range = text.split("–").map((price) => roundPrice(parsePrice(price) / rate));
+		return range.length === 2 && range.every(Number.isFinite)
+			? range.join(" – ")
+			: null;
+	}
+
+	// regular price: 845,00 ƃ
+	let priceText = text;
+	if (text.includes(":")) {
+		// cart total: 4 товара на сумму: 1681,35 ƃ
+		priceText = text.split(":").pop();
+	} else if ((text.includes("-") || text.includes("−")) && text.includes("%")) {
+		// sale price: -9% 5899,00 ƃ 5399,00 ƃ
+		priceText = text.match(/\d[\d\s]*(?:,\d+)?\s*ƃ/g)?.at(-1) ?? "";
+	}
+
+	const conversion = parsePrice(priceText) / rate;
+	return Number.isFinite(conversion) ? roundPrice(conversion) : null;
+}
+
+const observer = new MutationObserver((mutations) => {
+	const priceChanged = mutations.some(({ target, addedNodes }) =>
+		(target instanceof Element ? target : target.parentElement)?.closest(selectors) ||
+		Array.from(addedNodes).some((node) =>
+			node instanceof Element && (node.matches(selectors) || node.querySelector(selectors))
+		)
+	);
+	if (!priceChanged) return;
+	// Batch page changes and do not observe our own DOM updates.
+	observer.disconnect();
+	requestAnimationFrame(() => {
+		addConversion();
+		initializeObserver();
+	});
 });
 
 function initializeObserver() {
-	const targetElements = document.querySelector(selectorsForObserver);
-	if (targetElements) {
-		observer.observe(targetElements, {
-			subtree: true,
-			childList: true,
-		});
-	}
+	observer.observe(document, {
+		subtree: true,
+		childList: true,
+		characterData: true,
+	});
 }
